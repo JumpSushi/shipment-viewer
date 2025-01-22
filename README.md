@@ -22,4 +22,4 @@ glhf! lmk if you have any questions while working on PRs!
 
 ## json api
 
-`shipment-viewer.hackclub.com/dyn/jason/<email>/?signature=<signature>`
+`shipment-viewer.hackclub.com/dyn/jason/<email>?signature=<signature>`

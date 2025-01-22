@@ -205,7 +205,7 @@ class HighSeasShipment < Shipment
 
   def status_text
     case fields["status"]
-    when "PENDING_MANUAL_REVIEW"
+    when "PENDING_MANUAL_REVIEW", "on_hold"
       "awaiting manual review..."
     when "AWAITING_YSWS_VERIFICATION"
       "waiting for you to get verified..."
@@ -220,7 +220,7 @@ class HighSeasShipment < Shipment
 
   def status_icon
     case fields["status"]
-    when "PENDING_MANUAL_REVIEW"
+    when "PENDING_MANUAL_REVIEW", "on_hold"
       '<i class="fa-solid fa-hourglass-half"></i>'
     when "AWAITING_YSWS_VERIFICATION"
       '<i class="fa-solid fa-user-clock"></i>'

@@ -19,12 +19,26 @@
       document.addEventListener('DOMContentLoaded', () => {
         const toggle = document.getElementById('dark-mode-toggle');
         const body = document.body;
+
+        const updateDarkModeMaybe = () => {
+          if (localStorage.getItem('dark-mode') !== null) {
+            body.classList.toggle('dark-mode', localStorage.getItem('dark-mode') === 'true');
+          } else {
+            body.classList.toggle('dark-mode', window.matchMedia('(prefers-color-scheme: dark)').matches);
+          }
+        };
+
         toggle.addEventListener('click', () => {
-          body.classList.toggle('dark-mode');
-          localStorage.setItem('dark-mode', body.classList.contains('dark-mode'));
+          const isDarkMode = body.classList.toggle('dark-mode');
+          localStorage.setItem('dark-mode', isDarkMode);
         });
-        if (localStorage.getItem('dark-mode') === 'true') {
-          body.classList.add('dark-mode');
+
+        updateDarkModeMaybe();
+
+        if (localStorage.getItem('dark-mode') == null) {
+          window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
+            updateDarkModeMaybe();
+          });
         }
       });
   </script>

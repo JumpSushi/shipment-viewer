@@ -35,7 +35,7 @@
   <% end %>
   <br/><span>📅 Created on <%= shipment.date[..9] %></span>
   <% if @internal and shipment.internal_info_partial %>
-    <%= ii = erb shipment.internal_info_partial, locals: { shipment: } %>
+    <% ii = erb shipment.internal_info_partial, locals: { shipment: } %>
     <% if ii.present? %>
     <br/>
     <div class="internal" style="padding: 5px">

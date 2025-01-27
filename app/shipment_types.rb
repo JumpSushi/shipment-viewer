@@ -460,7 +460,7 @@ class OneOffShipment < Shipment
   self.table_name = ENV["OO_TABLE"]
   self.email_column = 'email'
 
-  SUPPORTED_FIELDS = %i[date tracking_number status_text icon hide_contents? status_icon shipped? description type_text title_text]
+  SUPPORTED_FIELDS = %i[tracking_number status_text icon hide_contents? status_icon shipped? description type_text title_text]
 
   def tracking_link
     fields['tracking_link'] || (tracking_number && "https://parcelsapp.com/en/tracking/#{tracking_number}") || nil

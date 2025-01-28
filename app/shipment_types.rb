@@ -13,8 +13,8 @@ Norairrecord.base_url = ENV["AIRTABLE_BASE_URL"] if ENV["AIRTABLE_BASE_URL"]
 class Shipment < Norairrecord::Table
   class << self
     def records(**args)
-      return [] unless table_name
       raise "don't use Shipment directly!" unless self < Shipment
+      return [] unless table_name
       super
     end
     def base_key

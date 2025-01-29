@@ -1,7 +1,10 @@
+<% content_for :head do %>
+  <script src=" https://cdn.jsdelivr.net/npm/js-cookie@3.0.5/dist/js.cookie.min.js "></script>
+<% end %>
 <div class="container">
   <div class="card sunken internal">
     <h1>here be dragons :-P</h1>
-    <form action="javascript:void(0);" onsubmit="document.cookie = `internal_key=${$('#key').value};max-age=31536000`; alert('set!'); return false">
+    <form action="javascript:void(0);" onsubmit="Cookies.set('internal_key', $('#key').value, {expires: 362}); alert('set!'); return false">
       <input type="password" placeholder=":3" id="key" name="key" style="margin-top: var(--spacing-3)"> <br/>
       <input class="button" type="submit" style="margin-top: var(--spacing-3); margin-bottom: var(--spacing-3);" value="save">
     </form>

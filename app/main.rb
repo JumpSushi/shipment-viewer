@@ -109,10 +109,13 @@ class ShipmentViewer < Sinatra::Base
 
   post '/api/presign' do
     request.body.rewind
-    unless request.env["HTTP_AUTHORIZATION"] && ENV["PRESIGNING_KEYS"]&.split(',').include?(request.env["HTTP_AUTHORIZATION"])
+    key = request.env["HTTP_AUTHORIZATION"]
+    unless key && ENV["PRESIGNING_KEYS"]&.split(',').include?(key)
       bounce_to_index! "not the right key ya goof"
     end
-    gen_url request.body.read
+    email = request.body.read
+    puts "#{key.split('@').last} is presigning a link for #{email}..."
+    gen_url email
   end
 
   error 404 do

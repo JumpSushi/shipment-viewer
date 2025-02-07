@@ -35,8 +35,9 @@ module Sinatra
         text
       end
     end
+
     def md(markdown)
-      (@renderer ||= Redcarpet::Markdown.new(SVFlavoredMarkdown.new(link_attributes: {target: '_blank'}), autolink: true, tables: true)).render(markdown)
+      (@renderer ||= Redcarpet::Markdown.new(SVFlavoredMarkdown.new(link_attributes: { target: '_blank' }), autolink: true, tables: true)).render(markdown)
     end
   end
   module SchmoneyHelper
@@ -45,7 +46,7 @@ module Sinatra
     end
   end
   module IIHelper
-    def render_ii(shipment, field, emoji, description, representation=nil, nilify=true)
+    def render_ii(shipment, field, emoji, description, representation = nil, nilify = true)
       return unless shipment[field]
       return if nilify && shipment[field] == 0
       "<br/><abbr title='#{description}'>#{emoji}</abbr>: #{representation&.call(shipment) || shipment[field]}"

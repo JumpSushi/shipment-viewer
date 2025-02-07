@@ -33,7 +33,7 @@
     <br/>
     👀 <span class="internal">Airtable: <%= external_link(shipment.source_id, shipment.source_url) %></span>
   <% end %>
-  <br/><span>📅 Created on <%= shipment.date[..9] %></span>
+  <br/><span>📅 Created on <%= shipment.date&.[](..9) || '??' %></span>
   <% if @internal and shipment.internal_info_partial %>
     <% ii = erb shipment.internal_info_partial, locals: { shipment: } %>
     <% if ii.present? %>

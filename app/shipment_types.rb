@@ -503,7 +503,7 @@ class PrintfulShipment < Shipment
     "mystic_tavern" => "MysticTavernShipment"
   }
   def date
-    fields['created']
+    fields['created'] || fields['%order:created']
   end
 
   def title_text
@@ -525,7 +525,7 @@ class PrintfulShipment < Shipment
     when "onhold"
       "on hold!?"
     when "shipped"
-      "shipped via #{fields['service']}!"
+      "shipped via #{fields['service']} on #{fields['ship_date']}!"
     when "started"
       "in production!"
     end
@@ -533,6 +533,14 @@ class PrintfulShipment < Shipment
 
   def shipped?
     fields['status'] == 'shipped'
+  end
+
+  def status_icon
+    if shipped?
+      '<i class="fa-solid fa-truck"></i>'
+    else
+      '<i class="fa-solid fa-clock"></i>'
+    end
   end
 
   def description

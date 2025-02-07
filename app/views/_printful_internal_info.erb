@@ -1,0 +1,6 @@
+<%= md <<-EOM
+  part of order [#{shipment['%order:pretty_id']}](#{shipment['%order:dashboard_url']})
+
+  packing slip: [click me](#{shipment['packing_slip_url']})
+EOM
+%>

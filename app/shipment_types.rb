@@ -5,11 +5,22 @@ if ENV['LEMME_MITM']
 end
 
 require 'norairrecord'
+require 'json'
+require "active_support"
+require 'active_support/core_ext/enumerable'
 
 Norairrecord.api_key = ENV["AIRTABLE_PAT"]
 Norairrecord.user_agent = "shipment viewer"
 Norairrecord.base_url = ENV["AIRTABLE_BASE_URL"] if ENV["AIRTABLE_BASE_URL"]
 
+def try_to_parse(str)
+  begin
+    return nil if str.nil?
+    JSON.parse(str)
+  rescue JSON::ParserError
+    []
+  end
+end
 class Shipment < Norairrecord::Table
   class << self
     def records(**args)
@@ -17,6 +28,7 @@ class Shipment < Norairrecord::Table
       return [] unless table_name
       super
     end
+
     def base_key
       ENV["AIRTABLE_BASE"];
     end
@@ -49,7 +61,7 @@ class Shipment < Norairrecord::Table
   def status_text
     "error fetching status! poke nora"
   end
-  
+
   def source_url
     fields.dig("source_rec_url", "url")
   end
@@ -166,7 +178,7 @@ class WarehouseShipment < Shipment
     return "it's a surprise!" if hide_contents?
     begin
       fields['user_facing_description'] ||
-        fields["Warehouse–Items Shipped JSON"] && JSON.parse(fields["Warehouse–Items Shipped JSON"]).select {|item| (item["quantity"]&.to_i || 0) > 0}.map do |item|
+        fields["Warehouse–Items Shipped JSON"] && JSON.parse(fields["Warehouse–Items Shipped JSON"]).select { |item| (item["quantity"]&.to_i || 0) > 0 }.map do |item|
           "#{item["quantity"]}x #{item["name"]}"
         end
     rescue JSON::ParserError
@@ -349,6 +361,7 @@ class BobaDropsShipment < Shipment
   def title_text
     "Boba Drops!"
   end
+
   def type_text
     "Boba Drops Shipment"
   end
@@ -382,7 +395,7 @@ class BobaDropsShipment < Shipment
       '<i class="fa-solid fa-circle-exclamation"></i>'
     end
   end
-  
+
   def tracking_link
     fields["[INTL] Tracking Link"]
   end
@@ -411,6 +424,7 @@ class SprigShipment < Shipment
   def title_text
     "Sprig!"
   end
+
   def type_text
     "Sprig shipment"
   end
@@ -481,4 +495,83 @@ class OneOffShipment < Shipment
   end
 end
 
-SHIPMENT_TYPES = [WarehouseShipment, HighSeasShipment, BobaDropsShipment, SprigShipment, OneOffShipment].freeze
+class PrintfulShipment < Shipment
+  self.table_name = ENV["PF_TABLE"]
+  self.email_column = '%order:recipient:email'
+
+  has_subtypes "subtype", {
+    "mystic_tavern" => "MysticTavernShipment"
+  }
+  def date
+    fields['created']
+  end
+
+  def title_text
+    "something custom!"
+  end
+
+  def type_text
+    "Printful shipment"
+  end
+
+  def icon
+    "🧢"
+  end
+
+  def status_text
+    case fields['status']
+    when "pending"
+      "pending..."
+    when "onhold"
+      "on hold!?"
+    when "shipped"
+      "shipped via #{fields['service']}!"
+    when "started"
+      "in production!"
+    end
+  end
+
+  def shipped?
+    fields['status'] == 'shipped'
+  end
+
+  def description
+    order_items = try_to_parse(fields['%order:items'])&.index_by { |item| item['id'] }
+    shipment_items = try_to_parse(fields['items'])
+
+    shipment_items.map do |si|
+      name = order_items&.dig(si['item_id'], 'name') || '???'
+      qty = si['quantity']
+      qty != 1 ? "#{qty}x #{name}" : name
+    end
+  end
+
+  def tracking_number
+    fields['tracking_number']
+  end
+
+  def tracking_link
+    fields['tracking_url'] if tracking_number
+  end
+
+  def internal_info_partial
+    :_printful_internal_info
+  end
+end
+
+class MysticTavernShipment < PrintfulShipment
+  def title_text
+    "Mystic Tavern shirts!"
+  end
+
+  def type_text
+    "arrrrrrrrrrrrr"
+  end
+
+  def icon
+    "👕"
+  end
+
+end
+
+SHIPMENT_TYPES = [WarehouseShipment, HighSeasShipment, BobaDropsShipment, SprigShipment, OneOffShipment, PrintfulShipment].freeze

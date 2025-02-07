@@ -503,7 +503,7 @@ class PrintfulShipment < Shipment
     "mystic_tavern" => "MysticTavernShipment"
   }
   def date
-    fields['created'] || fields['%order:created']
+    fields['created'] || Date.parse(fields['%order:created']).iso8601
   end
 
   def title_text

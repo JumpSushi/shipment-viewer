@@ -36,7 +36,7 @@ module Sinatra
       end
     end
     def md(markdown)
-      (@renderer ||= Redcarpet::Markdown.new(SVFlavoredMarkdown, autolink: true, tables: true)).render(markdown)
+      (@renderer ||= Redcarpet::Markdown.new(SVFlavoredMarkdown.new(link_attributes: {target: '_blank'}), autolink: true, tables: true)).render(markdown)
     end
   end
   module SchmoneyHelper

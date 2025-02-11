@@ -4,11 +4,11 @@
 <% end %>
 <%# i acknowledge that this is nasty %>
 💸: <%=
-      ['Postage', 'Labor', 'Contents', 'Total'].map do |f|
-        next unless (c = shipment.fields["Warehouse–#{f} Cost"])
-        "#{f.downcase}:&nbsp;#{cashify c}"
-      end.compact.join(", ").presence || "?"
-    %>
+  ['Postage', 'Labor', 'Contents', 'Total'].map do |f|
+    next unless (c = shipment.fields["Warehouse–#{f} Cost"])
+    "#{f.downcase}:&nbsp;#{cashify c}"
+  end.compact.join(", ").presence || "?"
+%>
 
 <%= render_ii(shipment, 'Warehouse–Order ID', '🆔', 'zenventory ID') %>
 <%= render_ii(shipment, 'Warehouse–Weight', '<i class="fa-solid fa-weight-hanging"></i>', 'weight') %>
